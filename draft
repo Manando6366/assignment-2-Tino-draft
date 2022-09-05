@@ -1,1 +1,380 @@
-ddff
+using System;
+
+public class Client
+{
+	private string name;
+	private string location;
+	private double totalIncome;
+	private double exportRate;
+	
+	public Client (string name, string location, double totalIncome, double exportRate)
+	{
+		this.name = name;
+		this.location = location;
+		this.totalIncome = totalIncome;
+		this.exportRate = exportRate;
+	}
+	public string GetName()
+	{
+		return name;
+	}
+	public string GetLocation()
+	{
+		return location;
+	}		
+	public double GetTotalIncome()
+	{
+		return totalIncome;
+	}		
+	public double GetExportRate()
+	{
+		return exportRate;
+	}
+}
+public class Bank : Client
+{
+	private double amountOfGivenLoans;
+	private int interestRate;
+	private string typeOfBank;
+	public double Revenue_Reinvestment = 0.2;
+	
+	
+	public Bank(string name, string location, double totalIncome, double exportRate, double amountOfGivenLoans, int interestRate, string typeOfBank)
+	
+	:base(name, location, totalIncome, exportRate)
+	{
+		this.amountOfGivenLoans = amountOfGivenLoans;
+		this.interestRate = interestRate;
+		this.typeOfBank = typeOfBank;
+	}
+	public double GetAmountOfGivenLoans()
+	{
+		return amountOfGivenLoans;
+	}
+	public int GetInterestRate()
+	{
+		return interestRate;
+	}
+	public string GetTypeOfBank()
+	{
+		return typeOfBank;
+	}
+	public override double CalculateNetRevenuePercentage()
+	{
+		double grossTotal = GetTotalIncome() + (GetTotalIncome()*interestRate);
+		double taxedIncome = grossTotal - (grossTotal * taxPercentage);
+		double netRevenue = (taxedIncome - (taxedIncome * Revenue_Reinvestment));
+		double netRevenuePercentage = ((netRevenue / grossTotal)*100);
+		return netRevenuePercentage;
+	}
+}
+public class PrivateOwnEnterprise : Client
+{
+	private string CEOname;
+    private string shareholder;
+    private string employee;
+
+    public PrivateOwnEnterprise (string name, string location, double totalIncome, double exportRate, string CEOname, string shareholder, string employee)
+	
+	:base(name, location, totalIncome, exportRate)
+	{
+		this.CEOname = CEOname;
+		this.shareholder = shareholder;
+		this.employee = employee;
+	}
+	public string GetCEOname()
+	{
+		return CEOname;
+	}
+	public string GetShareholder()
+	{
+		return shareholder;
+	}
+	public string GetEmployee()
+	{
+		return employee;
+	}
+    public override double CalculatePrivateNetPercentage()
+	{
+		double netIncome = (GetTotalIncome() - (GetTotalIncome() * taxPercentage));
+		double netPrivateRevenuePercentage = (netIncome/getTotalIncome()*100);
+		return netPrivateRevenuePercentage;
+	}	
+}
+public class StateOwnedEnterprise : Client
+{
+	private string NameOfBusinessInCoalition;
+	private int investmentTotal;
+	int Goverment_Divident = 0.35;
+	
+	public StateOwnedEnterprise(string name, string location, double totalIncome, double exportRate, string NameOfBusinessInCoalition, int investmentTotal)
+
+	:base(name, location, totalIncome, exportRate)
+	{
+		this.NameOfBusinessInCoalition = NameOfBusinessInCoalition;
+		this.investmentTotal = investmentTotal;
+	}
+	public int GetInvestmentTotal()
+	{
+		return investmentTotal;
+	}
+	public string ReturnBusinessName()
+	{
+		return NameOfBusinessInCoalition;
+	}
+	public override double CalculateStateNetRevenuePercentage()
+	{
+		double grossIncome = GetTotalIncome() + GetInvestmentTotal();
+		double taxedIncome = (GetTotalIncome() - (GetTotalIncome() * taxPercentage));
+		double netProfits = (taxedIncome - (taxedIncome * Goverment_Divident));
+		double netStateRevenuePercentage = ((netProfits / grossIncome)*100;
+		return netStateRevenuePercentage;
+	}
+}
+public class ProlineData
+{
+	List <Client> proClient;
+	
+	public ProlineData()
+	{
+        proClient = new List<Client>(100)
+	}
+	public void AddClient(Client d)
+	{
+        try
+        {
+            proClient.Add(d);
+        }
+        catch (IndecOutOfRangeException e)
+        {
+            throw e;
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+    }
+	public double AverageIncome()
+    {
+        double sum = 0;
+        int count = 0;
+        for (int i = 0; i < proClient.Count; i++)
+        {
+            sum += proClient[i].GetTotalIncome();
+            count++;
+        }
+            return sum / count;
+        }
+    }	
+	public (int, int, int) TotalTypeofClients()
+    {
+        int banksTotal = 0;
+        int privateTotal = 0;
+        int stateOwnedTotal = 0;
+        for (int i = 0; i < proClient.Count; i++)
+        {
+            if (proClient[i] is Bank)
+            {
+                banksTotal++;
+            }
+            else if (proClient[i] is PrivateOwnedEnterprise)
+            {
+                privateTotal++;
+            }
+            else
+            {
+                stateOwnedTotal++;
+            }
+        }
+            return (banksTotal, privateTotal, stateOwnedTotal);
+    }
+	public int HowManyClientsAreInNamibia()
+    {
+        int namClients = 0;
+        for (int i = 0; i < proClient.Count; i++)
+        {
+            if (proClient[i].GetLocation() == "Namibia")
+            {
+                namClients++;
+            }
+        }
+        return namClients;
+    }	 
+	public Client ClientWithLowestExportRate()
+    {
+        Client clientDetail = proClient[0];
+        double low_rate = proClient[0].GetExportRate();
+        for (int i = 0; i < proClient.Count; i++)
+        {
+            if (proClient[i].GetExportRate() < low_rate)
+            {
+                low_rate = proClient[i].GetExportRate();
+                clientDetail = proClient[i];
+            }
+        }
+            return clientDetail;
+    }
+    public int NumberOfClientWithExportRateOver1000()
+    {
+        int sum = 0;
+        for (int i = 0; i < proClient.Count; i++)
+        {
+           if (proClient[i].GetExportRate() > 1000)
+            {
+                sum += 1;
+            }
+        }
+        return sum;
+    }
+    public bool IfClientWithSpecificTotalIncome(int totalIncome)
+    {
+        bool check = false;
+        for (int i = 0; i < proClient.Count; i++)
+        {
+            if (proClient[i].GetTotalIncome().Equals(totalIncome))
+            {
+                check = true;
+            }
+        }
+        return check;
+    }
+    public Client ClientWithSpecificCEO(string c)
+    {
+        Client pos = proClient[0];
+        for (int i = 0; i < proClient.Count; i++)
+        {
+            if (proClient[i] is PrivateOwnedEnterprise)
+            {
+                if (((PrivateOwnedEnterprise)client[i]).GetCEOName().Equals(c))
+                {
+                    pos = proClient[i];
+                }
+            }
+        }
+        return pos;
+    }
+    public int TotalAmountOfLoanGivenByBanks()
+    {
+        int loanTotal = 0;
+        for (int i = 0; i < proClient.Count; i++)
+        {
+            if (client[i] is Bank)
+            {
+                loanTotal += ((Bank)proClient[i]).GetLoanTotal();
+            }
+        }
+        return loanTotal;
+    }
+    public double AverageIncomeOfNamibians()
+    {
+        int count = 0;
+        double avgNam = 0;
+        for (int i = 0; i < proClient.Count; i++)
+        {
+            if (proClient[i].GetLocation() == "Namibia")
+            {
+                avgNam += proClient[i].GetTotalIncome();
+                count++;
+            }
+        }
+        return avgNam / count;
+    }	
+	public double AverageIncomeOfClientsOutsideNamibia()
+    {
+        double nonNamIncome = 0;
+        double counter = 0;
+        for (int i = 0; i < proClient.Count; i++)
+        {
+            if (proClient[i].GetLocation() != "Namibia")
+            {
+                nonNamIncome += proClient[i].GetTotalIncome();
+                counter++;
+            }
+        }
+        return nonNamIncome / counter;
+    }     
+	public Client ClientsofSpecificLocation(string L)
+    {
+        Client cl = proClient[0];
+        string clientLocation = L;
+        for (int i = 0; i < proClient.Count; i++)
+        {
+            if (proClient[i].GetLocation().Equals(clientLocation))
+            {
+                cl = proClient[i];
+            }
+        }
+            return cl;
+    }
+    public string ReadFile(string path)
+    {
+        FileStream infile;
+        StreamReader read;
+        string message ;
+		
+        try
+        {
+            infile = new FileStream(path, FileMode.Open, FileAccess.Read);
+            read = new StreamReader(infile);
+            message = read.ReadToEnd();
+            infile.Close();
+            read.Close();
+        }
+        catch(FileNotFoundException e)
+        {
+            throw e;
+        }
+        catch(Exception e)
+        {
+            throw e;
+        }
+            return message;
+        }
+    }
+    public void SaveClientWithLowestExportRate(string path)
+    {
+    FileStream outfile;
+    StreamWriter write;
+    try
+    {
+        outfile = new FileStream(path, FileMode.Append, FileAccess.Write);
+        write = new StreamWriter(outfile);
+        write.WriteLine(ClientWithLowestExportRate());
+        write.Close();
+        outfile.Close();
+    }
+    catch(AccessViolationException e)
+    {
+        throw e;
+    }
+    catch (Exception e)
+    {
+        throw e;
+    }
+    public string ReadFile(string path)
+    {
+        FileStream infile;
+        StreamReader read;
+        string message ;
+		
+        try
+        {
+            infile = new FileStream(path, FileMode.Open, FileAccess.Read);
+            read = new StreamReader(infile);
+            message = read.ReadToEnd();
+            infile.Close();
+            read.Close();
+        }
+        catch(FileNotFoundException e)
+        {
+            throw e;
+        }
+        catch(Exception e)
+        {
+            throw e;
+        }
+
+            return message;
+        }
+    }
+}
