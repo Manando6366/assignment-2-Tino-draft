@@ -137,7 +137,7 @@ public class ProlineData
 	
 	public ProlineData()
 	{
-        proClient = new List<Client>(100)
+            proClient = new List<Client>(100)
 	}
 	public void AddClient(Client d)
 	{
@@ -279,7 +279,7 @@ public class ProlineData
         }
         return avgNam / count;
     }	
-	public double AverageIncomeOfClientsOutsideNamibia()
+    public double AverageIncomeOfClientsOutsideNamibia()
     {
         double nonNamIncome = 0;
         double counter = 0;
@@ -293,7 +293,7 @@ public class ProlineData
         }
         return nonNamIncome / counter;
     }     
-	public Client ClientsofSpecificLocation(string L)
+    public Client ClientsofSpecificLocation(string L)
     {
         Client cl = proClient[0];
         string clientLocation = L;
@@ -305,6 +305,18 @@ public class ProlineData
             }
         }
             return cl;
+    }
+    public string StringManipulation()
+    {
+        string line = " ";
+        for (int i = 0; i < devices.Count; i++)
+        {
+            if (proClient[i].GetBrand().StartsWith("Namibia"))
+            {
+                line += proClient[i].ToString();
+            }
+        }
+        return line;
     }
     public string ReadFile(string path)
     {
@@ -378,3 +390,46 @@ public class ProlineData
         }
     }
 }
+ public static void Main(string[] args)
+ { 
+     ProlineData DB = new ProlineData();
+
+
+     Client [] proClient = new Client[10];
+     proClient[0] =new Bank("Bank Windhoek", "Namibia", 10000000.00, 32.34, 120.00, 30, "Commerical");
+     proClient[0] =new Bank("FNB", "Namibia", 40000000.00, 25.01, 843.00, 23, "Local");
+     proClient[8] = new StateOwnedEnterprise("Harare Sports Club", "Zimbabwe", 10600.00, 9.65, "Zanu PF", 1000000.00);
+     proClient[3] =new PrivateOwnedEnterprise("Sanlam", "Namibia", 1000000.00, 17.90, "Mohammad", "First Capital", "Peter");
+     proClient[0] =new Bank("Barcley", "South Africa", 5000000.00, 37.12, 60.00, 43, "Private");
+     proClient[8] = new StateOwnedEnterprise("RiverSide Game Park", "South Africa", 110800.00, 10.65, "Environment Management Agent", 900000.00);
+     proClient[3] =new PrivateOwnedEnterprise("Makney", "Zimbabwe", 700000.00, 13.90, "Patrick", "Miles Ent.", "Clemence");
+     proClient[0] =new Bank("FBC", "Zimbabwe", 800000.00, 32.34, 120.00, 30, "Commerical");
+     proClient[8] = new StateOwnedEnterprise("Hage.G Stadium", "Namibia", 120699.00, 10.65, "Swapo", 8000000.00);
+     proClient[3] =new PrivateOwnedEnterprise("NUST", "Namibia", 900000.00, 16,88, "Nelson", "UNR", "Erick");
+ 
+ //Adding devices to my array
+ 
+     DB.AddClient(proClient[0]);
+     DB.AddClient(proClient[1]);
+     DB.AddClient(proClient[2]);
+     DB.AddClient(proClient[3]);
+     DB.AddClient(proClient[4]);
+     DB.AddClient(proClient[5]);
+     DB.AddClient(proClient[6]);
+     DB.AddClient(proClient[7]);
+     DB.AddClient(proClient[8]);
+     DB.AddClient(proClient[9]);
+     
+     Console.WriteLine("The client with the lowest export rate is : " +
+     DB.ClientWithLowestExportRate())
+     
+     Console.WriteLine("The following are clients from Namibia : ");
+     Console.WriteLine(DB.StringManipulation());
+     
+     DB.SaveClientWithLowestExportRate(@"C:\OOP\save.txt");
+     
+     Console.WriteLine("Reading from File: ");
+     Console.WriteLine(DB.ReadFile(@"C:\OOP\save.txt"));
+     Console.ReadLine();
+ }
+
